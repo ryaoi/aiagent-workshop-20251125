@@ -34,7 +34,7 @@ class Agent:
         self.messages.append({"role": "user", "content": message})
         
         completion = client.chat.completions.create(
-            model="openai/gpt-4o",
+            model="anthropic/claude-sonnet-4.5",
             messages=self.messages
         )
         
@@ -46,35 +46,38 @@ class Agent:
 
 # ReActパターンのプロンプト
 REACT_PROMPT = """
-あなたは以下のループで動作します：
-Thought（思考）、Action（行動）、PAUSE、Observation（観察）
+あなたは日本語で応答するAIエージェントです。
+以下のループで動作します：Thought（思考）→ Action（行動）→ PAUSE → Observation（観察）
 
-ループの最後にAnswer（回答）を出力します。
+必ず日本語で応答してください。
 
-Thought: 質問について考えたことを記述
-Action: 利用可能なアクションを実行し、PAUSEを返す
-Observation: アクションの実行結果
+ステップ：
+1. Thought: 何をすべきか考える（日本語で）
+2. Action: ツールを使う場合は「Action: ツール名: パラメータ」の形式で記述
+3. PAUSE: ツールの実行を待つ
+4. Observation: ツールの結果が返される
+5. Answer: 最終的な答えを出す（日本語で）
 
-利用可能なアクション：
+利用可能なツール：
 
 calculate:
 例: calculate: 4 * 7 / 3
-計算を実行して結果を返します（Pythonの構文を使用）
+計算を実行して結果を返します（Pythonの構文）
 
 【例】
 
 質問: 15 × 23 は？
-Thought: 計算が必要です
+Thought: 掛け算の計算が必要です
 Action: calculate: 15 * 23
 PAUSE
 
-その後、以下が返されます：
-
+（システムから返される）
 Observation: 345
 
-そして出力：
-
+Thought: 計算結果が得られました
 Answer: 15 × 23 = 345 です
+
+重要：必ず日本語で考えて、日本語で答えてください。
 """.strip()
 
 
@@ -101,11 +104,17 @@ def query(question, max_turns=5):
     agent = Agent(REACT_PROMPT)
     next_prompt = question
     
-    print(f"質問: {question}\n")
+    print(f"❓ 質問: {question}\n")
+    print("=" * 60)
     
-    for i in range(max_turns):
+    for turn in range(1, max_turns + 1):
+        print(f"\n🔄 ターン {turn}")
+        print("-" * 60)
+        
         result = agent(next_prompt)
-        print(result)
+        
+        # 結果を見やすく表示
+        print(f"🤔 AIの応答:\n{result}")
         
         # Actionがあるかチェック
         actions = action_re.findall(result)
@@ -115,36 +124,46 @@ def query(question, max_turns=5):
             action, action_input = actions[0]
             
             if action not in known_actions:
-                print(f"エラー: 不明なアクション {action}")
+                print(f"\n❌ エラー: 不明なアクション '{action}'")
                 return None
             
-            print(f"\n🔧 実行: {action}({action_input})")
+            print(f"\n⚙️  ツール実行: {action}")
+            print(f"   入力: {action_input}")
             observation = known_actions[action](action_input)
-            print(f"📊 結果: {observation}\n")
+            print(f"   結果: {observation}")
             
             next_prompt = f"Observation: {observation}"
         else:
-            # Actionがない場合は終了
+            # Actionがない場合は終了（最終回答）
+            print("\n" + "=" * 60)
+            print("✅ 最終回答が得られました")
             return result
     
+    print("\n⚠️ 最大ターン数に達しました")
     return None
 
 
 if __name__ == "__main__":
     print("\n🤖 ReActパターン AIエージェント")
     print("=" * 60)
-    print("AIが自分で考えてツールを使い、問題を解決します！\n")
+    print("AIが自分で考えてツールを使い、問題を解決します！")
+    print("計算が必要な質問をしてみてください。")
+    print("例: 「25 × 34 は？」「(15 + 7) × 3 を計算して」")
+    print("=" * 60)
     
     # ユーザーから質問を受け取る
-    question = input("質問: ")
+    question = input("\n質問: ")
     
     # AIエージェントで処理
     query(question)
     
     print("\n" + "=" * 60)
-    print("✅ 完了！")
-    print("\n💡 ポイント: AIは質問を理解し、必要なツール（calculate）を")
-    print("   自分で選んで使いました。これがReActパターンです。")
-    print("\n💡 次のステップ: 新しいツールを追加してみましょう！")
-    print("   例: weather（天気）、translate（翻訳）など")
+    print("💡 ポイント:")
+    print("   1. AIが「Thought」で何をすべきか考えた")
+    print("   2. 「Action」でツールを選んで使った")
+    print("   3. 「Observation」で結果を確認した")
+    print("   4. 「Answer」で最終的な答えを出した")
+    print("\n   これがReActパターン（思考→行動→観察のループ）です！")
+    print("\n💡 次のステップ:")
+    print("   新しいツールを追加してエージェントを拡張してみましょう！")
     print("=" * 60)

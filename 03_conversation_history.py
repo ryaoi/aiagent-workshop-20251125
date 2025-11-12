@@ -25,7 +25,7 @@ def chat(messages, user_message):
     
     # AIにメッセージを送信（会話履歴全体を含める）
     completion = client.chat.completions.create(
-        model="openai/gpt-4o",
+        model="anthropic/claude-sonnet-4.5",
         messages=messages  # 過去の会話も全て送る
     )
     

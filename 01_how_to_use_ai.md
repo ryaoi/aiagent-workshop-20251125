@@ -42,11 +42,11 @@ client = OpenAI(
 
 ```python
 completion = client.chat.completions.create(
-    model="openai/gpt-4o",           # 使用するモデル
-    messages=[                        # メッセージのリスト
+    model="anthropic/claude-sonnet-4.5",  # 使用するモデル
+    messages=[                              # メッセージのリスト
         {
-            "role": "user",           # 誰が話すか
-            "content": "こんにちは"   # メッセージの内容
+            "role": "user",                 # 誰が話すか
+            "content": "こんにちは"         # メッセージの内容
         }
     ]
 )
@@ -107,7 +107,7 @@ messages = [
 ]
 
 completion = client.chat.completions.create(
-    model="openai/gpt-4o",
+    model="anthropic/claude-sonnet-4.5",
     messages=messages
 )
 ```
@@ -129,7 +129,7 @@ response = completion.choices[0].message.content
     "id": "chatcmpl-...",
     "object": "chat.completion",
     "created": 1234567890,
-    "model": "openai/gpt-4o",
+    "model": "anthropic/claude-sonnet-4.5",
     "choices": [
         {
             "index": 0,
@@ -219,7 +219,7 @@ OpenRouterやOpenAIは、使用量に応じて課金されます。料金は**�
 
 **APIキーは秘密情報です。** GitHubにpushしたり、人に見せたりしないようにしましょう。
 
-**送れる会話の量には制限があります。** モデルによって、一度に処理できる会話の長さが決まっています。この長さは「トークン」という単位で測られます（おおよそ単語や文字の数）。例えば、GPT-4oは約128,000トークン、GPT-3.5は約16,000トークンまで処理できます。この制限を超えるとエラーになります。また、制限内でも会話が長くなりすぎると、古い情報が薄れて文脈がうまく伝わらない可能性があります。
+**送れる会話の量には制限があります。** モデルによって、一度に処理できる会話の長さが決まっています。この長さは「トークン」という単位で測られます（おおよそ単語や文字の数）。例えば、Claude Sonnet 4.5は約1,000,000トークンまで処理できます。この制限を超えるとエラーになります。また、制限内でも会話が長くなりすぎると、古い情報が薄れて文脈がうまく伝わらない可能性があります。
 
 ---
 

@@ -22,7 +22,7 @@ def chat(user_message):
     """AIにメッセージを送って返答を取得"""
     # AIにメッセージを送る
     completion = client.chat.completions.create(
-        model="openai/gpt-4o",  # 使用するモデル
+        model="anthropic/claude-sonnet-4.5",  # 使用するモデル
         messages=[
             {
                 "role": "user",  # 誰が話すか
