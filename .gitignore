@@ -1,1 +1,5 @@
 .cursorrules
+.env
+memos.csv
+__pycache__/
+*.pyc

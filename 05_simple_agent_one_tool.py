@@ -1,18 +1,20 @@
 """
-05_build_ai_agent_with_tools.py
-ReActパターンを使ったAIエージェントの実装
+05_simple_agent_one_tool.py
+シンプルなReActエージェント（1つのツールのみ）
 
 このスクリプトでは以下を学びます：
-1. ReAct（Reasoning + Acting）パターンの実装
-2. AIにツールを与える方法
+1. ReAct（Reasoning + Acting）パターンの基本
+2. AIが自分で考えてツールを使う仕組み
 3. Thought → Action → Observation のループ
-4. 自律的に問題を解決するAIエージェント
 
-参考: https://til.simonwillison.net/llms/python-react-pattern
+まずは1つのツールで仕組みを理解しましょう！
+
+⚠️ 注意: shell_commandツールは危険なコマンドを実行しないでください
 """
 
 import os
 import re
+import subprocess
 from openai import OpenAI
 
 # OpenRouterクライアントの初期化
@@ -23,7 +25,7 @@ client = OpenAI(
 
 
 class Agent:
-    """ReActパターンで動作するAIエージェント"""
+    """ReActパターンで動作するシンプルなAIエージェント"""
     
     def __init__(self, system_prompt):
         self.system_prompt = system_prompt
@@ -60,22 +62,27 @@ REACT_PROMPT = """
 
 利用可能なツール：
 
-calculate:
-例: calculate: 4 * 7 / 3
-計算を実行して結果を返します（Pythonの構文）
+shell_command:
+例: shell_command: ls -la
+シェルコマンドを実行して結果を返します
+⚠️ 警告: 危険なコマンド（rm, sudo等）は実行しないでください
 
 【例】
 
-質問: 15 × 23 は？
-Thought: 掛け算の計算が必要です
-Action: calculate: 15 * 23
+質問: 現在のディレクトリにあるファイルを見せて
+Thought: ファイル一覧を取得するにはlsコマンドが必要です
+Action: shell_command: ls -la
 PAUSE
 
 （システムから返される）
-Observation: 345
+Observation: total 48
+drwxr-xr-x  8 user  staff   256 Nov 12 10:30 .
+drwxr-xr-x  5 user  staff   160 Nov 12 09:00 ..
+-rw-r--r--  1 user  staff  1234 Nov 12 10:30 README.md
 
-Thought: 計算結果が得られました
-Answer: 15 × 23 = 345 です
+Thought: ファイル一覧が得られました
+Answer: 現在のディレクトリには以下のファイルがあります：
+- README.md（1234バイト）
 
 重要：必ず日本語で考えて、日本語で答えてください。
 """.strip()
@@ -85,17 +92,47 @@ Answer: 15 × 23 = 345 です
 action_re = re.compile(r'^Action: (\w+): (.*)$', re.MULTILINE)
 
 
-def calculate(expression):
-    """計算ツール"""
+def shell_command(command):
+    """
+    シェルコマンドを実行（危険なコマンドに注意！）
+    
+    ⚠️ セキュリティ警告:
+    - rm, sudo, dd などの危険なコマンドは実行しないでください
+    - 本番環境では絶対に使用しないでください
+    - 教育目的のみの使用に限定してください
+    """
+    # 危険なコマンドのブラックリスト
+    dangerous_commands = ['rm', 'sudo', 'dd', 'mkfs', 'format', ':(){', 'wget', 'curl -O']
+    
+    # 危険なコマンドチェック
+    for dangerous in dangerous_commands:
+        if dangerous in command.lower():
+            return f"⚠️ 危険なコマンド '{dangerous}' が検出されました。実行を拒否します。"
+    
     try:
-        return eval(expression)
+        # コマンドを実行（タイムアウト5秒）
+        result = subprocess.run(
+            command,
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        
+        output = result.stdout.strip()
+        if result.stderr:
+            output += f"\nエラー: {result.stderr.strip()}"
+        
+        return output if output else "コマンドは正常に実行されました（出力なし）"
+    except subprocess.TimeoutExpired:
+        return "コマンドがタイムアウトしました（5秒制限）"
     except Exception as e:
-        return f"計算エラー: {e}"
+        return f"コマンド実行エラー: {e}"
 
 
 # 利用可能なツール
 known_actions = {
-    "calculate": calculate,
+    "shell_command": shell_command,
 }
 
 
@@ -144,11 +181,16 @@ def query(question, max_turns=5):
 
 
 if __name__ == "__main__":
-    print("\n🤖 ReActパターン AIエージェント")
+    print("\n🤖 シンプルなReActエージェント（1ツール）")
     print("=" * 60)
-    print("AIが自分で考えてツールを使い、問題を解決します！")
-    print("計算が必要な質問をしてみてください。")
-    print("例: 「25 × 34 は？」「(15 + 7) × 3 を計算して」")
+    print("AIが自分で考えてシェルコマンドを使います！")
+    print("\n利用可能なツール:")
+    print("  💻 shell_command - シェルコマンドを実行（⚠️ 危険なコマンドは禁止）")
+    print("\n試してみよう:")
+    print("  「現在のディレクトリのファイル一覧を見せて」")
+    print("  「今日の日付は？」")
+    print("  「現在のPythonバージョンは？」")
+    print("\n⚠️ 注意: rm, sudo などの危険なコマンドは実行しないでください")
     print("=" * 60)
     
     # ユーザーから質問を受け取る
@@ -160,10 +202,12 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("💡 ポイント:")
     print("   1. AIが「Thought」で何をすべきか考えた")
-    print("   2. 「Action」でツールを選んで使った")
+    print("   2. 「Action」でシェルコマンドを使った")
     print("   3. 「Observation」で結果を確認した")
     print("   4. 「Answer」で最終的な答えを出した")
-    print("\n   これがReActパターン（思考→行動→観察のループ）です！")
+    print("\n   これがReActパターンの基本です！")
     print("\n💡 次のステップ:")
-    print("   新しいツールを追加してエージェントを拡張してみましょう！")
+    print("   06_advanced_agent_multiple_tools.py で複数のツールを使えるエージェントを試しましょう！")
+    print("   AIが状況に応じて適切なツールを選ぶ様子を観察できます！")
     print("=" * 60)
+

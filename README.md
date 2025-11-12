@@ -68,13 +68,35 @@ python 04_system_prompting_with_ai.py
 
 ### ステップ3: AIエージェントを構築（25分）
 
-いよいよメインパートです。
+いよいよメインパートです。まずはシンプルなエージェントから始めて、段階的に複雑にしていきましょう。
+
+#### 3-1: シンプルなReActエージェント（10分）
 
 ```bash
-python 05_build_ai_agent_with_tools.py
+python 05_simple_agent_one_tool.py
 ```
 
-ReActパターンを使ったAIエージェントの実装を見ていきます。質問を入力すると、AIが自分で「思考」→「行動」→「観察」のループを回します。計算が必要な問題を出してみると、AIが自分で`calculate`ツールを選んで使う様子を観察できます。
+ReActパターンの基本を学びます。1つのツール（シェルコマンド実行）だけを持つシンプルなエージェントです。AIが「思考」→「行動」→「観察」のループを回す様子をじっくり観察しましょう。
+
+利用可能なツール：
+- **shell_command**: シェルコマンドを実行（例：「現在のディレクトリのファイル一覧を見せて」「今日の日付は？」）⚠️
+
+#### 3-2: 複数ツールを持つ高度なエージェント（15分）
+
+```bash
+python 06_advanced_agent_multiple_tools.py
+```
+
+複数のツールを持つエージェントに挑戦します。ここからが本番です！AIが状況に応じて適切なツールを選ぶ様子を観察してください。
+
+利用可能なツール：
+- **calculate**: 計算を実行（例：「25 × 34 は？」）
+- **weather**: 天気情報を取得（例：「東京の天気は？」）
+- **save_memo**: メモをCSVファイルに保存（例：「明日は会議とメモして」）
+- **read_memos**: 保存したメモを読み込む（例：「今までのメモを見せて」）
+- **shell_command**: シェルコマンドを実行（例：「現在のディレクトリのファイル一覧を見せて」）⚠️
+
+⚠️ **注意**: `shell_command`は教育目的のみです。危険なコマンド（`rm`, `sudo`など）は実行しないでください。
 
 ### ステップ4: カスタマイズと実験（10分）
 
@@ -84,15 +106,16 @@ ReActパターンを使ったAIエージェントの実装を見ていきます�
 
 ```
 .
-├── README.md                          # このファイル
-├── 00_introduction_ai_ai_agent.md     # AIとAIエージェントの説明
-├── 01_how_to_use_ai.md                # OpenAI APIの使い方
-├── 02_get_response_from_ai.py         # 基本的なAPI呼び出し
-├── 03_conversation_history.py         # 会話履歴の継続
-├── 04_system_prompting_with_ai.py     # システムプロンプト
-├── 05_build_ai_agent_with_tools.py    # ReActエージェント
-├── requirements.txt                   # 必要なパッケージ
-└── .devcontainer/                     # GitHub Codespaces設定
+├── README.md                             # このファイル
+├── 00_introduction_ai_ai_agent.md        # AIとAIエージェントの説明
+├── 01_how_to_use_ai.md                   # OpenAI APIの使い方
+├── 02_get_response_from_ai.py            # 基本的なAPI呼び出し
+├── 03_conversation_history.py            # 会話履歴の継続
+├── 04_system_prompting_with_ai.py        # システムプロンプト
+├── 05_simple_agent_one_tool.py           # シンプルなReActエージェント（1ツール）
+├── 06_advanced_agent_multiple_tools.py   # 高度なReActエージェント（複数ツール）
+├── requirements.txt                      # 必要なパッケージ
+└── .devcontainer/                        # GitHub Codespaces設定
     └── devcontainer.json
 ```
 
