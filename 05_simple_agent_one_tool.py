@@ -198,16 +198,4 @@ if __name__ == "__main__":
     
     # AIエージェントで処理
     query(question)
-    
-    print("\n" + "=" * 60)
-    print("💡 ポイント:")
-    print("   1. AIが「Thought」で何をすべきか考えた")
-    print("   2. 「Action」でシェルコマンドを使った")
-    print("   3. 「Observation」で結果を確認した")
-    print("   4. 「Answer」で最終的な答えを出した")
-    print("\n   これがReActパターンの基本です！")
-    print("\n💡 次のステップ:")
-    print("   06_advanced_agent_multiple_tools.py で複数のツールを使えるエージェントを試しましょう！")
-    print("   AIが状況に応じて適切なツールを選ぶ様子を観察できます！")
-    print("=" * 60)
 

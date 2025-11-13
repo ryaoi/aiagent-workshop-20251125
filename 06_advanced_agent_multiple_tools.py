@@ -336,18 +336,3 @@ if __name__ == "__main__":
     
     # AIエージェントで処理
     query(question)
-    
-    print("\n" + "=" * 60)
-    print("💡 ポイント:")
-    print("   1. AIが「Thought」で何をすべきか考えた")
-    print("   2. 複数のツールから適切なものを選んだ")
-    print("   3. 「Action」でツールを使った")
-    print("   4. 「Observation」で結果を確認した")
-    print("   5. 「Answer」で最終的な答えを出した")
-    print("\n   これがReActパターン（思考→行動→観察のループ）です！")
-    print("\n💡 05との違い:")
-    print("   05: 1つのツール（shell_command）のみ → ReActの基本を理解")
-    print("   06: 複数のツール → AIが状況に応じて選択できる！")
-    print("\n💡 次のステップ:")
-    print("   新しいツールを追加してエージェントをさらに拡張してみましょう！")
-    print("=" * 60)

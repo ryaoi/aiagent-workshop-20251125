@@ -64,6 +64,3 @@ if __name__ == "__main__":
         # AIとチャット
         response = chat(messages, question)
         print(f"AI: {response}\n")
-    
-    print("\n💡 ポイント: システムプロンプトを変えることで、AIの振る舞いを制御できます。")
-    print("   例: 「関西弁で話すAI」「プログラミング講師」「翻訳者」など")
