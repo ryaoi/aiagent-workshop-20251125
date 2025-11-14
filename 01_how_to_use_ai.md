@@ -150,6 +150,47 @@ response = completion.choices[0].message.content
 
 ほとんどの場合、`choices[0].message.content`だけを取り出せば十分です。
 
+より詳しいAPIのレスポンスデータ構造については、OpenAIの公式ドキュメントを参照してください：
+
+https://platform.openai.com/docs/api-reference/chat/create
+
+:::message
+**今後のAPI利用について：Responses APIへの移行**
+
+このワークショップでは従来の**Chat Completions API**（`client.chat.completions.create()`）を使用していますが、OpenAIは新しい**Responses API**（`client.responses.create()`）への移行を推奨しています。
+
+Responses APIの主な利点：
+- **より簡潔な構文**: `messages`の代わりに`input`で直接文字列を渡せる
+- **エージェント機能がビルトイン**: web検索、ファイル検索、コード実行などが標準搭載
+- **パフォーマンス向上**: 推論モデル使用時に約3%の精度向上
+- **コスト削減**: キャッシュ最適化により40-80%のコスト削減
+- **ステートフル対応**: ターン間で文脈を自動保持
+
+```python
+# 従来のChat Completions API（このワークショップで使用）
+completion = client.chat.completions.create(
+    model="gpt-5",
+    messages=[
+        {"role": "user", "content": "こんにちは"}
+    ]
+)
+print(completion.choices[0].message.content)
+
+# 新しいResponses API（今後推奨）
+response = client.responses.create(
+    model="gpt-5",
+    input="こんにちは"
+)
+print(response.output_text)
+```
+
+Chat Completions APIは引き続きサポートされますが、新規プロジェクトではResponses APIの使用が推奨されています。
+
+詳しくは以下の移行ガイドを参照してください：
+
+https://platform.openai.com/docs/guides/migrate-to-responses?update-item-definitions=responses&update-multiturn=responses
+:::
+
 ## システムプロンプトの例
 
 システムプロンプトを工夫することで、AIの振る舞いを様々に変えられます。いくつか例を見てみましょう。
