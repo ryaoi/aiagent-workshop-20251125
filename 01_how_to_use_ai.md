@@ -154,7 +154,6 @@ response = completion.choices[0].message.content
 
 https://platform.openai.com/docs/api-reference/chat/create
 
-:::message
 **今後のAPI利用について：Responses APIへの移行**
 
 このワークショップでは従来の**Chat Completions API**（`client.chat.completions.create()`）を使用していますが、OpenAIは新しい**Responses API**（`client.responses.create()`）への移行を推奨しています。
@@ -189,7 +188,6 @@ Chat Completions APIは引き続きサポートされますが、新規プロジ
 詳しくは以下の移行ガイドを参照してください：
 
 https://platform.openai.com/docs/guides/migrate-to-responses?update-item-definitions=responses&update-multiturn=responses
-:::
 
 ## システムプロンプトの例
 
