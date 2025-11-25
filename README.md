@@ -6,7 +6,7 @@ OpenAIを使ったReActパターンのAIエージェントを1時間で学ぶワ
 
 このワークショップでは、AIエージェントの基礎を実践的に学びます。OpenAI APIの基本的な使い方から始めて、システムプロンプトでAIの振る舞いを制御する方法を理解し、最終的にはReActパターンを使った自律的に動作するAIエージェントを構築します。
 
-ワークショップの終わりには、自分で考えてツールを使い分けるAIエージェントが完成します。そこから先は、自分だけのツールを追加して、さらに機能を拡張することもできるようになるでしょう。
+ワークショップの終わりには、自分で考えてツールを使い分けるAIエージェントが完成します。そこから先は、自分だけのツールを追加して、さらに機能を拡張することもできるようになります。
 
 ## 前提条件
 
@@ -18,7 +18,7 @@ OpenAIを使ったReActパターンのAIエージェントを1時間で学ぶワ
 
 1. このリポジトリのページで「Code」ボタンをクリック
 2. 「Codespaces」タブを選択
-3. 「Create codespace on main」をクリック
+3. 「＋（Create codespace on main）」をクリック
 
 数分でブラウザ上にVS Codeが起動します。
 
@@ -133,8 +133,3 @@ python 06_advanced_agent_multiple_tools.py
 - [OpenRouter](https://openrouter.ai/)
 - [ReActパターンの論文](https://arxiv.org/abs/2210.03629)
 - [Simon Willison's ReAct実装](https://til.simonwillison.net/llms/python-react-pattern)
-
-## 📝 ライセンス
-
-このワークショップ資料はMITライセンスの下で公開されています。
-
